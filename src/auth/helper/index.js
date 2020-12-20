@@ -43,8 +43,9 @@ export const storeCredentials = (data, next) => {
 
 export const signout = next => {
     if(typeof window !== "undefined") {
-        localStorage.removeItem("jwt");
-        fetch(`${API}/auth/signout`, {
+        const _id = isAuthenticated().user._id;
+        localStorage.clear();
+        fetch(`${API}/auth/signout/${_id}`, {
             method: "GET"
         })
             .then(response => console.log('Signout Success'))
