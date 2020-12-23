@@ -8,6 +8,9 @@ import AdminRoute from "./auth/helper/AdminRoutes";
 import UserDashBoard from "./user/UserDashBoard";
 import AdminDashBoard from "./user/AdminDashBoard";
 import AdminClass from "./user/adminClass";
+import AdminAssignment from "./user/adminAssignment";
+import UserClass from "./user/userClass";
+import UserAssignment from "./user/userAssignment";
 
 const Routes = () => {
     return (
@@ -17,8 +20,11 @@ const Routes = () => {
                 <Route path='/signin' exact component={Signin}/>
                 <Route path='/signup' exact component={Signup}/>
                 <PrivateRoute path="/user/dashboard" exact component={UserDashBoard} />
+                <PrivateRoute path="/user/dashboard/my-class/:course_code" exact component={UserClass} />
+                <PrivateRoute path="/user/dashboard/my-class/:course_code/assignments" exact component={UserAssignment} />
                 <AdminRoute path="/admin/dashboard" exact component={AdminDashBoard} />
                 <AdminRoute path="/admin/dashboard/my-class/:course_code" exact component={AdminClass} />
+                <AdminRoute path="/admin/dashboard/my-class/:course_code/assignments" exact component={AdminAssignment} />
             </Switch>
         </BrowserRouter>
     );

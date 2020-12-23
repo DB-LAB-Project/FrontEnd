@@ -127,7 +127,7 @@ const AdminDashBoard = () => {
 
 
     return (
-        <Base className="bg-dark text-white px-3 container-fluid mt-3">
+        <Base className="bg-dark text-white px-3 container-fluid mt-3 p-4">
             <hr/>
             {loading ? loadingMessage() : (
                 <div>
@@ -141,7 +141,7 @@ const AdminDashBoard = () => {
                     </div>
                     <hr/>
                     <div className="row align-items-start" style={{display: displayMainContent}}>
-                        <ClassList cls={cls}/>
+                        <ClassList cls={cls} isAdmin={true}/>
                     </div>
                     {classCreateForm()}
                 </div>

@@ -16,9 +16,13 @@ const UserDashBoard = () => {
 
     const [loading, setLoading] = useState(true);
 
-    const [displayClassForm, setDisplayClassForm] = useState("none");
+    const [displayEnrollForm, setDisplayEnrollForm] = useState("none");
 
     const [enrollClassCode, setEnrollClassCode] = useState('');
+
+    const [logoColor, setLogoColor] = useState('');
+
+    const [displayMainContent, setDisplayMainContent] = useState("");
 
     const colors = [
         "#EAF0F1",
@@ -48,6 +52,7 @@ const UserDashBoard = () => {
                     localStorage.setItem("classes", JSON.stringify(data));
                 }
             });
+            setLogoColor(backgroundColorPicker());
             setLoading(false);
         }
     }, []);
@@ -68,9 +73,20 @@ const UserDashBoard = () => {
         console.log(enrollClassCode);
     }
 
+    const displayForm = () => {
+        setDisplayEnrollForm("");
+        setDisplayMainContent("none");
+    }
+
+    const closeForm = () => {
+        setDisplayEnrollForm("none");
+        setDisplayMainContent("");
+        window.location.reload(false);
+    }
+
     const classEnrollForm = () => {
         return (
-            <div className="card w-25 mx-auto border" style={{display: displayClassForm}}>
+            <div className="card w-25 mx-auto border" style={{display: displayEnrollForm}}>
                 <form className="m-3 p-4 border border-secondary rounded">
                     <div className="mb-3">
                         <label className="form-label text-dark">Course Code</label>
@@ -84,29 +100,26 @@ const UserDashBoard = () => {
             </div>
         )
     };
-
-    const displayForm = () => {
-        setDisplayClassForm("");
-    }
-
-    const closeForm = () => {
-        setDisplayClassForm("none");
-    }
-
     const handleEnrollClass = () => {
+        setLoading(true);
         enrollIntoClass(enrollClassCode)
-            .then(data => {console.log(data)})
-            .catch(err => {console.error(err)});
+            .then(data => {
+                console.log(data);
+                setLoading(false);
+                closeForm();
+            })
+            .catch(err => {
+                console.error(err)
+            });
     }
-
 
     return (
-        <Base className="bg-dark text-white px-3 container-fluid mt-3">
+        <Base className="bg-dark text-white px-3 container-fluid mt-3 p-4">
             <hr/>
             {loading ? loadingMessage(): (
                 <div>
                     <div>
-                        <div style={{backgroundColor: backgroundColorPicker(), borderRadius: "50%", width: "49px", height: "49px", display: "inline-block", textAlign: "center"}}>
+                        <div style={{backgroundColor: logoColor, borderRadius: "50%", width: "49px", height: "49px", display: "inline-block", textAlign: "center"}}>
                             <h3 className="p-1 text-dark text-center d-inline-block">{userInfo.name.slice(0,2)}</h3>
                         </div>
                         {/*<img src={user} alt="" width="50px" height="50px" style={{backgroundColor: "white", borderRadius: "50%"}}/>*/}
@@ -114,14 +127,16 @@ const UserDashBoard = () => {
                         <button className="btn btn-lg btn-outline-success float-right rounded" onClick={displayForm}>Enroll</button>
                     </div>
                     <hr/>
-                    <div className="row align-items-start">
-                        <ClassList cls={cls}/>
+                    <div className="row align-items-start" style={{display: displayMainContent}}>
+                        <ClassList cls={cls} isAdmin={false}/>
                     </div>
                     {classEnrollForm()}
                 </div>
             )}
         </Base>
     );
-};
+}
+
+
 
 export default UserDashBoard;

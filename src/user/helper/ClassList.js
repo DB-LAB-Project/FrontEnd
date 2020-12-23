@@ -5,6 +5,7 @@ export const ClassList = (props) => {
 
     // const classes = JSON.parse(localStorage.getItem("classes"));
     const classes = props.cls;
+    const isAdmin = props.isAdmin;
     const colors = [
         "#EAF0F1",
         "#E74292",
@@ -28,12 +29,17 @@ export const ClassList = (props) => {
         </div>
     }
     return classes.map((cls, idx) => {
-        return <Link to={`/admin/dashboard/my-class/${cls["course_code"]}`}>
-            <div className="card d-inline-block m-2 px-0" key={idx} style={{backgroundColor: backgroundColorPicker(), width: "302px"}}>
-                <h2 className="card-header text-left text-dark">{cls.subject}</h2>
-                <h6 className="card-body text-left text-dark d-1 d-inline-block">{cls["course_code"]}</h6>
-            </div>
-        </Link>
+        return isAdmin ? (<Link to={`/admin/dashboard/my-class/${cls["course_code"]}`}>
+                <div className="card d-inline-block m-2 px-0" key={idx} style={{backgroundColor: backgroundColorPicker(), width: "302px"}}>
+                    <h2 className="card-header text-left text-dark">{cls.subject}</h2>
+                    <h6 className="card-body text-left text-dark d-1 d-inline-block">{cls["course_code"]}</h6>
+                </div>
+            </Link>) : (<Link to={`/user/dashboard/my-class/${cls["course_code"]}`}>
+                <div className="card d-inline-block m-2 px-0" key={idx} style={{backgroundColor: backgroundColorPicker(), width: "302px"}}>
+                    <h2 className="card-header text-left text-dark">{cls.subject}</h2>
+                    <h6 className="card-body text-left text-dark d-1 d-inline-block">{cls["course_code"]}</h6>
+                </div>
+            </Link>)
 
 
 

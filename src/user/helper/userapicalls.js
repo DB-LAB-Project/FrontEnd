@@ -1,6 +1,6 @@
 import {API} from "../../backend";
 import {isAuthenticated} from "../../auth/helper";
-
+import axios from 'axios';
 
 export const getUserClasses = () => {
     const _id = isAuthenticated().user._id;
@@ -63,5 +63,127 @@ export const createClass = (subject, course_code) => {
 }
 
 export const getClassItems = (course_code) => {
-    const url = `${API}/class/`
+    const url = `${API}/class//get-faculty-uploads/${course_code}`;
+    return fetch(url, {
+        method: "GET"
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => {
+            console.log(err);
+        });
 }
+
+export const leaveClass = (course_code) => {
+    const url = `${API}/class/leave-class`;
+    const details = {
+        _id: isAuthenticated().user._id,
+        course_code: course_code
+    };
+    return fetch(url, {
+        method: "DELETE",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(details)
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+export const getClassAssignments = (course_code) => {
+    const url = `${API}/assignment/my-assignments/${course_code}`;
+    return fetch(url, {
+        method: "GET"
+    })
+        .then(response => {
+            return response.json()
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+export const deleteClass = (course_code) => {
+    const url = `${API}/class/delete-class/${course_code}`;
+    return fetch(url, {
+        method: "DELETE"
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => {
+            console.log(err);
+        });
+
+}
+
+export const postMaterial = (formData) => {
+    const url = `${API}/class/post`;
+    const classes = JSON.parse(localStorage.getItem("classes"));
+    const cur_class = classes.filter(cls => cls.course_code === formData.course_code);
+    console.log(cur_class);
+    let fd = new FormData();
+    fd.append('faculty_id', isAuthenticated().user._id);
+    fd.append('class_id', cur_class[0]._id);
+    fd.append('course_code', formData.course_code);
+    fd.append('title', formData.title);
+    fd.append('description', formData.description);
+    if(formData.attachment) {
+        fd.append('attachment', formData.attachment, formData.attachment.name);
+    }
+    return axios.post(url, fd)
+        .then(response => {
+            console.log(response);
+            return response.data;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    console.log(fd);
+}
+
+export const postAssignment = (formData) => {
+    const url = `${API}/assignment/post/new`;
+    const fd = new FormData();
+    fd.append('title', formData.title);
+    fd.append('description', formData.description);
+    fd.append('course_code', formData.course_code);
+    fd.append('marks', formData.marks);
+    fd.append('due_date', formData.due_date);
+    if(formData.questions) {
+        fd.append('questions', formData.questions, formData.questions.name);
+    }
+    console.log(fd);
+    return axios.post(url, fd)
+        .then(response => {
+            console.log(response);
+            return response.data;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+export const getUserSubmissionsInClass = (course_code) => {
+    const _id = isAuthenticated().user._id;
+    console.log(course_code);
+    const url = `${API}/assignment/get-all-user-submissions/${course_code}/${_id}`;
+    console.log(url);
+    return fetch(url, {
+        method: "GET"
+    })
+        .then(response => {
+            return response.json()
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+

@@ -1,11 +1,30 @@
 import React from "react";
 import "../styles.css"
 import "./home.css"
+import BG from "../assets/BG.png"
+import chat from "../assets/chat.png"
 import Base from "./Base";
 
 const Home = () => {
+
+    const styleObj = {
+        backgroundImage: `url(${BG})`,
+    }
+
     return (
-        <Base>
+        <Base className="px-0">
+            <div className="home" style={styleObj}>
+                <h1 className="text-white display-4 w-100 text-center" style={{zIndex: "2", opacity: "1", fontSize: "7rem", fontFamily: "Niconne"}}>Learning Management System</h1>
+                <p className="w-100 text-center text-white d-block" style={{zIndex: "2", opacity: "1", marginTop: "-600px"}}>One stop solution to manage all your classes and assignments online</p>
+            </div>
+            <div className="container-fluid d-flex m-5">
+                <div className="card text-center" style={{width: "100px"}}>
+                    <img src={chat} alt="chat image" className="d-block w-25 mx-auto" style={{width: "100px", height:"100px"}}/>
+                    <h3 className="card-header">
+                        Simplified Communication
+                    </h3>
+                </div>
+            </div>
             {/*<body data-new-gr-c-s-check-loaded="14.983.0" className="vsc-initialized">*/}
             {/*<main role="main">*/}
             {/*    <div id="myCarousel" className="carousel slide" data-ride="carousel">*/}
@@ -212,5 +231,8 @@ const Home = () => {
         </Base>
 
     );
+
+
+
 }
 export default Home;
