@@ -135,6 +135,7 @@ export const postMaterial = (formData) => {
     fd.append('course_code', formData.course_code);
     fd.append('title', formData.title);
     fd.append('description', formData.description);
+    fd.append('links', formData.link);
     if(formData.attachment) {
         fd.append('attachment', formData.attachment, formData.attachment.name);
     }
@@ -185,5 +186,95 @@ export const getUserSubmissionsInClass = (course_code) => {
         .catch(err => {
             console.log(err);
         });
+}
+
+export const getAllChatsInClass = (course_code) => {
+    const url = `${API}/discussion/class/${course_code}`;
+    return fetch(url, {
+        method: "GET"
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
+
+export const getAllUsersInClass = (course_code) => {
+    const url = `${API}/user/get_all_in_class/${course_code}`;
+    return fetch(url, {
+        method: "GET"
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+export const postChat = (course_code, message) => {
+    const url = `${API}/discussion/post/${course_code}`;
+    const msgData = {
+        _id: isAuthenticated().user._id,
+        message: message
+    }
+    return fetch(url, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(msgData)
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+export const getAssignmentSubmissions = (assignment_id) => {
+    const url = `${API}/assignment/get-submissions/${assignment_id}`;
+    return fetch(url, {
+        method: "GET"
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+export const submitAssignment = (formData) => {
+    const url = `${API}/assignment/submit`;
+    const user_id = isAuthenticated().user._id;
+    const fd = new FormData();
+    fd.append('user_id', user_id);
+    fd.append('assignment_id', formData.assignment_id);
+    if(formData.submission) {
+        fd.append('submission', formData.submission, formData.submission.name);
+    }
+    return axios.post(url, fd)
+        .then(response => {
+            return response.data;
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
+
+export const scoreAssignment = (data) => {
+    const url = `${API}/assignment/evaluate`;
+    console.log(JSON.stringify(data));
+    return axios.put(url, data)
+        .then(response => {
+            return response.data;
+        })
+        .catch(err => console.log(err));
+
 }
 

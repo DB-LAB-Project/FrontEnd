@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Base from "../core/Base";
-import {getClassItems, leaveClass, deleteClass, postMaterial} from "./helper/userapicalls";
+import {getClassItems, leaveClass, deleteClass, postMaterial, getAllUsersInClass} from "./helper/userapicalls";
 import {Redirect, Link} from 'react-router-dom'
 import UploadDisplay from "./helper/uploadDisplay";
 
@@ -26,14 +26,14 @@ const UserClass = (props) => {
     const [displayMainContent, setDisplayMainContent] = useState("");
 
     const colors = [
-        "#EAF0F1",
-        "#E74292",
+        "#ade8f4",
+        "#e6b8a2",
         "#01CBC6",
-        "#BB2CD9",
-        "#8B78E6",
+        "#b7e4c7",
+        "#faedcd",
+        "#fefae0",
+        "#80ffdb",
         "#00CCCD",
-        "#1287A5",
-        "#EA7773",
         "#F5BCBA"
     ];
 
@@ -56,7 +56,16 @@ const UserClass = (props) => {
                     console.log(err);
                 })
             setLogoColor(backgroundColorPicker());
-            setLoading(false);
+            getAllUsersInClass(props.match.params.course_code)
+                .then(data => {
+                    localStorage.setItem('class_users', JSON.stringify(data));
+                    console.log(data);
+                    setLoading(false);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+            // setLoading(false);
         }
     }, []);
 
@@ -125,9 +134,13 @@ const UserClass = (props) => {
                         <Link to={`/user/dashboard/my-class/${props.match.params.course_code}/assignments`}>
                             <button className="btn btn-lg btn-outline-primary float-right rounded mx-2">Assignments</button>
                         </Link>
+                        <Link to={`/discussion-group/${props.match.params.course_code}`}>
+                            <button className="btn btn-lg btn-outline-info float-right rounded mx-2">Discussion Group</button>
+                        </Link>
                     </div>
                     <hr/>
                     <div className="container" style={{display: displayMainContent}}>
+                        <h2 className="text-white text-center mb-3">{JSON.parse(localStorage.getItem('classes')).filter(cls => cls.course_code === props.match.params.course_code)[0].subject}:&nbsp; Course Material </h2>
                         <UploadDisplay uploads={classUploads} isAssignment={false}/>
                     </div>
                     {leaveClassDialog()}

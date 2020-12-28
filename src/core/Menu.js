@@ -26,7 +26,7 @@ const Menu = ({history}) => (
             <div className="collapse navbar-collapse" id="navbarCollapse">
                 <ul className="navbar-nav ml-auto">
                     <li className={currentTab(history, '/')}>
-                        <Link className="nav-link" to="/">Home </Link>
+                        <Link className="nav-link" to="/">Home</Link>
                     </li>
                     {isAuthenticated() && isAuthenticated().user.role === 0 && (
                         <li className={currentTab(history, '/user/dashboard')}>
@@ -39,10 +39,7 @@ const Menu = ({history}) => (
                         </li>
                     )}
                     <li className={currentTab(history, '/contact-us')}>
-                        <Link className="nav-link" to="/contact-us">Contact Us<span className="sr-only">(current)</span></Link>
-                    </li>
-                    <li className={currentTab(history, '/about-us')}>
-                        <Link className="nav-link" to="/about-us">About Us</Link>
+                        <a className="nav-link" href="mailto:lms554896@gmail.com">Contact Us<span className="sr-only">(current)</span></a>
                     </li>
                     {!isAuthenticated() && (
                         <Fragment>

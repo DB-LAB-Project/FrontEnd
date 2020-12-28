@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Base from "../core/Base";
-import {getClassAssignments, postAssignment} from "./helper/userapicalls";
+import {getClassAssignments, postAssignment, getAssignmentSubmissions} from "./helper/userapicalls";
 import {Link, Redirect} from "react-router-dom";
 import UploadDisplay from "./helper/uploadDisplay";
 
@@ -35,14 +35,14 @@ const AdminAssignment = (props) => {
     const [errors, setErrors] = useState({});
 
     const colors = [
-        "#EAF0F1",
-        "#E74292",
+        "#ade8f4",
+        "#e6b8a2",
         "#01CBC6",
-        "#BB2CD9",
-        "#8B78E6",
+        "#b7e4c7",
+        "#faedcd",
+        "#fefae0",
+        "#80ffdb",
         "#00CCCD",
-        "#1287A5",
-        "#EA7773",
         "#F5BCBA"
     ];
 
@@ -54,6 +54,7 @@ const AdminAssignment = (props) => {
             getClassAssignments(props.match.params.course_code)
                 .then(data => {
                     setAssignmentUploads(data);
+                    localStorage.setItem('assignments', JSON.stringify(data));
                     console.log(data);
                 })
                 .catch(err => {
@@ -139,7 +140,7 @@ const AdminAssignment = (props) => {
                     </div>
                     <div className="mb-3">
                         <label className="form-label text-dark">Description {errors.descriptionError && <p className="text-danger">{errors.descriptionError}</p>}</label>
-                        <input type="text" className="form-control rounded" placeholder="Enter assignment description" onChange={handlePostFormChange('description')}/>
+                        <textarea type="text" className="form-control rounded" required="required" placeholder="Enter the description" onChange={handlePostFormChange('description')} style={{whiteSpace: "pre-line"}}/>
                     </div>
                     <div className="mb-3">
                         <label className="form-label text-dark">Questions</label>
@@ -184,6 +185,7 @@ const AdminAssignment = (props) => {
                     </div>
                     <hr/>
                     <div className="container" style={{display: displayMainContent}}>
+                        <h2 className="text-white text-center mb-3">{JSON.parse(localStorage.getItem('classes')).filter(cls => cls.course_code === props.match.params.course_code)[0].subject}:&nbsp;Assignments</h2>
                         <UploadDisplay uploads={assignmentUploads} isAssignment={true} isStudent={false}/>
                     </div>
                     {postAssignmentDialog()}

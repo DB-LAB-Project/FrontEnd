@@ -19,30 +19,30 @@ const UserAssignment = (props) => {
 
     const [logoColor, setLogoColor] = useState('');
 
-    const [displayMainContent, setDisplayMainContent] = useState("");
-
-    const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        course_code: props.match.params.course_code,
-        marks: null,
-        due_date: '',
-        questions: null
-    });
+    // const [displayMainContent, setDisplayMainContent] = useState("");
+    //
+    // const [formData, setFormData] = useState({
+    //     title: '',
+    //     description: '',
+    //     course_code: props.match.params.course_code,
+    //     marks: null,
+    //     due_date: '',
+    //     questions: null
+    // });
 
     const [PostForm, setPostForm] = useState("none");
 
     const [errors, setErrors] = useState({});
 
     const colors = [
-        "#EAF0F1",
-        "#E74292",
+        "#ade8f4",
+        "#e6b8a2",
         "#01CBC6",
-        "#BB2CD9",
-        "#8B78E6",
-        "#00CCCD",
-        "#1287A5",
-        "#EA7773",
+        "#b7e4c7",
+        "#faedcd",
+        "#fefae0",
+        "#80ffdb",
+        "#f3c4fb",
         "#F5BCBA"
     ];
 
@@ -54,6 +54,7 @@ const UserAssignment = (props) => {
             getClassAssignments(props.match.params.course_code)
                 .then(data => {
                     setAssignmentUploads(data);
+                    localStorage.setItem('assignments', JSON.stringify(data));
                     console.log(data);
                 })
                 .catch(err => {
@@ -91,87 +92,87 @@ const UserAssignment = (props) => {
         );
     };
 
-    const handlePostFormChange = name => event => {
-        if(name === 'questions') {
-            setFormData({...formData, questions: event.target.files[0]});
-        } else {
-            setFormData({...formData, [name]: event.target.value});
-            setErrors({});
-        }
-    }
+    // const handlePostFormChange = name => event => {
+    //     if(name === 'questions') {
+    //         setFormData({...formData, questions: event.target.files[0]});
+    //     } else {
+    //         setFormData({...formData, [name]: event.target.value});
+    //         setErrors({});
+    //     }
+    // }
 
-    const handlePostAssignment = (event) => {
-        event.preventDefault();
-        if(formData.title === '') {
-            setErrors({...errors, titleError: "Title cannot be empty!"})
-        }
-        else if(formData.description === '') {
-            setErrors({...errors, descriptionError: "Description cannot be empty!"})
-        }
-        else if(formData.marks === null) {
-            setErrors({...errors, marksError: "Marks cannot be empty!"})
-        }
-        else if(formData.due_date === '') {
-            setErrors({...errors, due_dateError: "Due Date cannot be empty!"})
-        }
-        else {
-            setLoading(true);
-            postAssignment(formData)
-                .then(data => {
-                    console.log(data);
-                    setLoading(false);
-                    closePostClassForm();
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        }
-        // console.log(formData);
-    }
+    // const handlePostAssignment = (event) => {
+    //     event.preventDefault();
+    //     if(formData.title === '') {
+    //         setErrors({...errors, titleError: "Title cannot be empty!"})
+    //     }
+    //     else if(formData.description === '') {
+    //         setErrors({...errors, descriptionError: "Description cannot be empty!"})
+    //     }
+    //     else if(formData.marks === null) {
+    //         setErrors({...errors, marksError: "Marks cannot be empty!"})
+    //     }
+    //     else if(formData.due_date === '') {
+    //         setErrors({...errors, due_dateError: "Due Date cannot be empty!"})
+    //     }
+    //     else {
+    //         setLoading(true);
+    //         postAssignment(formData)
+    //             .then(data => {
+    //                 console.log(data);
+    //                 setLoading(false);
+    //                 closePostClassForm();
+    //             })
+    //             .catch(err => {
+    //                 console.log(err);
+    //             });
+    //     }
+    //     // console.log(formData);
+    // }
 
-    const displayPostClassForm = () => {
-        setPostForm("");
-        setDisplayMainContent("none");
-    }
+    // const displayPostClassForm = () => {
+    //     setPostForm("");
+    //     setDisplayMainContent("none");
+    // }
+    //
+    // const closePostClassForm = () => {
+    //     setPostForm("none");
+    //     setDisplayMainContent("");
+    //     window.location.reload(false);
+    // }
 
-    const closePostClassForm = () => {
-        setPostForm("none");
-        setDisplayMainContent("");
-        window.location.reload(false);
-    }
-
-    const postAssignmentDialog = () => {
-        return (
-            <div className="card w-25 mx-auto border" style={{display: PostForm}}>
-                <form className="m-3 p-4 border border-secondary rounded">
-                    <div className="mb-3">
-                        <label className="form-label text-dark">Title {errors.titleError && <p className="text-danger">{errors.titleError}</p>}</label>
-                        <input type="text" className="form-control rounded" placeholder="Enter the title of the assignment" onChange={handlePostFormChange('title')}/>
-                    </div>
-                    <div className="mb-3">
-                        <label className="form-label text-dark">Description {errors.descriptionError && <p className="text-danger">{errors.descriptionError}</p>}</label>
-                        <input type="text" className="form-control rounded" placeholder="Enter assignment description" onChange={handlePostFormChange('description')}/>
-                    </div>
-                    <div className="mb-3">
-                        <label className="form-label text-dark">Questions</label>
-                        <input type="file" className="form-control rounded" placeholder="upload questions file" onChange={handlePostFormChange('questions')}/>
-                    </div>
-                    <div className="mb-3">
-                        <label className="form-label text-dark">Marks {errors.marksError && <p className="text-danger">{errors.marksError}</p>}</label>
-                        <input type="text" className="form-control rounded" placeholder="Enter the maximum marks for the assignment" onChange={handlePostFormChange('marks')}/>
-                    </div>
-                    <div className="mb-3">
-                        <label className="form-label text-dark">Due Date {errors.due_dateError && <p className="text-danger">{errors.due_dateError}</p>}</label>
-                        <input type="datetime-local" className="form-control rounded" placeholder="Enter the due date for the assignment submission" onChange={handlePostFormChange('due_date')}/>
-                    </div>
-                    <div className="d-flex">
-                        <button className="btn btn-lg btn-outline-danger d-inline-block flex-grow-1 rounded m-2" onClick={closePostClassForm}>Exit</button>
-                        <button className="btn btn-lg btn-success d-inline-block flex-grow-1 rounded m-2" onClick={handlePostAssignment}>Post Material</button>
-                    </div>
-                </form>
-            </div>
-        );
-    };
+    // const postAssignmentDialog = () => {
+    //     return (
+    //         <div className="card w-25 mx-auto border" style={{display: PostForm}}>
+    //             <form className="m-3 p-4 border border-secondary rounded">
+    //                 <div className="mb-3">
+    //                     <label className="form-label text-dark">Title {errors.titleError && <p className="text-danger">{errors.titleError}</p>}</label>
+    //                     <input type="text" className="form-control rounded" placeholder="Enter the title of the assignment" onChange={handlePostFormChange('title')}/>
+    //                 </div>
+    //                 <div className="mb-3">
+    //                     <label className="form-label text-dark">Description {errors.descriptionError && <p className="text-danger">{errors.descriptionError}</p>}</label>
+    //                     <input type="text" className="form-control rounded" placeholder="Enter assignment description" onChange={handlePostFormChange('description')}/>
+    //                 </div>
+    //                 <div className="mb-3">
+    //                     <label className="form-label text-dark">Questions</label>
+    //                     <input type="file" className="form-control rounded" placeholder="upload questions file" onChange={handlePostFormChange('questions')}/>
+    //                 </div>
+    //                 <div className="mb-3">
+    //                     <label className="form-label text-dark">Marks {errors.marksError && <p className="text-danger">{errors.marksError}</p>}</label>
+    //                     <input type="text" className="form-control rounded" placeholder="Enter the maximum marks for the assignment" onChange={handlePostFormChange('marks')}/>
+    //                 </div>
+    //                 <div className="mb-3">
+    //                     <label className="form-label text-dark">Due Date {errors.due_dateError && <p className="text-danger">{errors.due_dateError}</p>}</label>
+    //                     <input type="datetime-local" className="form-control rounded" placeholder="Enter the due date for the assignment submission" onChange={handlePostFormChange('due_date')}/>
+    //                 </div>
+    //                 <div className="d-flex">
+    //                     <button className="btn btn-lg btn-outline-danger d-inline-block flex-grow-1 rounded m-2" onClick={closePostClassForm}>Exit</button>
+    //                     <button className="btn btn-lg btn-success d-inline-block flex-grow-1 rounded m-2" onClick={handlePostAssignment}>Post Material</button>
+    //                 </div>
+    //             </form>
+    //         </div>
+    //     );
+    // };
 
 
     return (
@@ -187,10 +188,10 @@ const UserAssignment = (props) => {
                         {/*<button className="btn btn-lg btn-outline-success float-right rounded mx-2" onClick={displayPostClassForm}>Post Assignment</button>*/}
                     </div>
                     <hr/>
-                    <div className="container" style={{display: displayMainContent}}>
+                    <div className="container">
+                        <h2 className="text-white text-center mb-3">{JSON.parse(localStorage.getItem('classes')).filter(cls => cls.course_code === props.match.params.course_code)[0].subject}:&nbsp; Assignments </h2>
                         <UploadDisplay uploads={assignmentUploads} isAssignment={true} isStudent={true}/>
                     </div>
-                    {postAssignmentDialog()}
                 </div>
             )}
         </Base>

@@ -27,14 +27,14 @@ const AdminDashBoard = () => {
     const [logoColor, setLogoColor] = useState('')
 
     const colors = [
-        "#EAF0F1",
-        "#E74292",
+        "#ade8f4",
+        "#e6b8a2",
         "#01CBC6",
-        "#BB2CD9",
-        "#8B78E6",
+        "#b7e4c7",
+        "#faedcd",
+        "#fefae0",
+        "#80ffdb",
         "#00CCCD",
-        "#1287A5",
-        "#EA7773",
         "#F5BCBA"
     ];
 
@@ -123,6 +123,7 @@ const AdminDashBoard = () => {
     const closeForm = () => {
         setDisplayClassForm("none");
         setDisplayMainContent("");
+        window.location.reload(false);
     }
 
 

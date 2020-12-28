@@ -12,23 +12,68 @@ const Signup = () => {
         USN: "",
         email: "",
         phone: "",
+        guardianPhone: "",
         role: 0,
         password: "",
         error: "",
         success: false
     });
 
-    let {_id,name, USN, email, phone, role, password, error, success} = values;
+    const [err, setErr] = useState({
+        nameError: '',
+        emailError: '',
+        passwordError: '',
+        usnError: '',
+        phoneError: '',
+        guardianPhoneError: ''
+    })
+
+    let {_id,name, USN, email, phone, guardianPhone, role, password, error, success} = values;
 
     const handleChange = name => event => {
         setValues({...values, error: "", [name]: event.target.value});
+        setErr({
+            nameError: '',
+            emailError: '',
+            passwordError: '',
+            usnError: '',
+            phoneError: '',
+            guardianPhoneError: ''
+        });
+        if(name === 'role' && event.target.value === 0) {
+            window.location.reload(false);
+        }
     }
 
     const submitForm = e => {
         e.preventDefault();
         console.log(values);
         setValues({...values, error: ""});
-        signup({USN,name,email,phone,role,password})
+        if(name === '') {
+            setErr({...err, nameError:'This field cannot be empty!'});
+            return;
+        }
+        else if(USN === '') {
+            setErr({...err, usnError:'This field cannot be empty!'});
+            return;
+        }
+        else if(email === '') {
+            setErr({...err, emailError:'This field cannot be empty!'});
+            return;
+        }
+        else if(phone === '') {
+            setErr({...err, phoneError:'This field cannot be empty!'});
+            return;
+        }
+        else if(guardianPhone === '') {
+            setErr({...err, guardianPhoneError:'This field cannot be empty!'});
+            return;
+        }
+        else if(password === '') {
+            setErr({...err, passwordError:'This field cannot be empty!'});
+            return;
+        }
+        signup({USN,name,email,phone,role,password,guardianPhone})
             .then(data => {
                 console.log(data);
                 if(data.error) {
@@ -40,6 +85,7 @@ const Signup = () => {
                         name: "",
                         email: "",
                         phone: "",
+                        guardianPhone: "",
                         role: 0,
                         password: "",
                         USN: "",
@@ -88,20 +134,24 @@ const Signup = () => {
                     <div className="col-md-6 offset-sm-3 text-left">
                         <form onSubmit={submitForm}>
                             <div className="form-group">
-                                <label className="text-light">Name</label>
+                                <label className="text-light">Name {err.nameError && <span className='text-danger'>{err.nameError}</span>}</label>
                                 <input className="form-control" onChange={handleChange("name")} type="text" />
                             </div>
                             <div className="form-group">
-                                <label className="text-light">User Id</label>
+                                <label className="text-light">User Id {err.usnError && <span className='text-danger'>{err.usnError}</span>}</label>
                                 <input className="form-control" onChange={handleChange("USN")} type="text" />
                             </div>
                             <div className="form-group">
-                                <label className="text-light">Email</label>
+                                <label className="text-light">Email {err.emailError && <span className='text-danger'>{err.emailError}</span>}</label>
                                 <input className="form-control"  onChange={handleChange("email")} type="email" />
                             </div>
                             <div className="form-group">
-                                <label className="text-light">Phone</label>
+                                <label className="text-light">Phone {err.phoneError && <span className='text-danger'>{err.phoneError}</span>}</label>
                                 <input className="form-control"  onChange={handleChange("phone")} type="text" />
+                            </div>
+                            <div className="form-group" style={{display: role === 0 ? "" : "none"}}>
+                                <label className="text-light">Parent/Guardian's Phone {err.guardianPhoneError && <span className='text-danger'>{err.guardianPhoneError}</span>}</label>
+                                <input className="form-control"  onChange={handleChange("guardianPhone")} type="text" />
                             </div>
                             <div className="form-group">
                                 <label className="text-light">Role</label>
@@ -111,7 +161,7 @@ const Signup = () => {
                                 </select>
                             </div>
                             <div className="form-group">
-                                <label className="text-light">Password</label>
+                                <label className="text-light">Password {err.passwordError && <span className='text-danger'>{err.passwordError}</span>}</label>
                                 <input className="form-control" onChange={handleChange("password")} type="text" />
                             </div>
                             <button className="btn btn-success btn-block">Submit</button>

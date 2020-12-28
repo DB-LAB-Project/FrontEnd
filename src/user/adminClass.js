@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Base from "../core/Base";
-import {getClassItems, leaveClass, deleteClass, postMaterial} from "./helper/userapicalls";
+import {getClassItems, leaveClass, deleteClass, postMaterial, getAllUsersInClass} from "./helper/userapicalls";
 import {Redirect, Link} from 'react-router-dom'
 import UploadDisplay from "./helper/uploadDisplay";
 
@@ -35,18 +35,19 @@ const AdminClass = (props) => {
         title: '',
         description: '',
         course_code: props.match.params.course_code,
+        link: null,
         attachment: null
     });
 
     const colors = [
-        "#EAF0F1",
-        "#E74292",
+        "#ade8f4",
+        "#e6b8a2",
         "#01CBC6",
-        "#BB2CD9",
-        "#8B78E6",
+        "#b7e4c7",
+        "#faedcd",
+        "#fefae0",
+        "#80ffdb",
         "#00CCCD",
-        "#1287A5",
-        "#EA7773",
         "#F5BCBA"
     ];
 
@@ -69,7 +70,15 @@ const AdminClass = (props) => {
                     console.log(err);
                 })
             setLogoColor(backgroundColorPicker());
-            setLoading(false);
+            getAllUsersInClass(props.match.params.course_code)
+                .then(data => {
+                    localStorage.setItem('class_users', JSON.stringify(data));
+                    console.log(data);
+                    setLoading(false);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     }, []);
 
@@ -191,7 +200,7 @@ const AdminClass = (props) => {
                     console.log(err)
                 });
             console.log(formData);
-            setFormData({title: '', description: '', course_code: props.match.params.course_code, attachment: null});
+            setFormData({title: '', description: '', course_code: props.match.params.course_code, link: null, attachment: null});
         }
     }
 
@@ -216,8 +225,12 @@ const AdminClass = (props) => {
                     </div>
                     <div className="mb-3">
                         <label className="form-label text-dark">Description {errors.descriptionError && <p className="text-danger">{errors.descriptionError}</p>}</label>
-                        <textarea type="text" className="form-control rounded" required="required" placeholder="Enter the description" onChange={handlePostFormChange('description')} style={{whiteSpace: "pre-line"}} multiline={true}/>
+                        <textarea type="text" className="form-control rounded" required="required" placeholder="Enter the description" onChange={handlePostFormChange('description')} style={{whiteSpace: "pre-line"}}/>
                     </div>
+                    {/*<div className="mb-3">*/}
+                    {/*    <label className="form-label text-dark">Link</label>*/}
+                    {/*    <input type="text" className="form-control rounded" required="required" placeholder="Enter the link (if any)..." onChange={handlePostFormChange('link')} style={{whiteSpace: "pre-line"}} multiline={true}/>*/}
+                    {/*</div>*/}
                     <div className="mb-3">
                         <label className="form-label text-dark">File</label>
                         <input type="file" className="form-control" placeholder="Choose the file you want to upload" onChange={handlePostFormChange('attachment')}/>
@@ -235,7 +248,7 @@ const AdminClass = (props) => {
                     {/*    <input type="datetime-local" className="form-control rounded" reqiured placeholder="Enter the Course Code" onChange={handlePostFormChange('due_date')}/>*/}
                     {/*</div>*/}
                     <div className="d-flex">
-                        <button className="btn btn-lg btn-outline-danger d-inline-block flex-grow-1 rounded m-2" onClick={closeForm}>Exit</button>
+                        <button className="btn btn-lg btn-outline-danger d-inline-block flex-grow-1 rounded m-2" onClick={closePostClassForm}>Exit</button>
                         <button className="btn btn-lg btn-success d-inline-block flex-grow-1 rounded m-2" onClick={handlePostMaterial}>Post Material</button>
                     </div>
                 </form>
@@ -272,10 +285,14 @@ const AdminClass = (props) => {
                             <button className="btn btn-lg btn-outline-primary float-right rounded mx-2">Assignments</button>
                         </Link>
                         <button className="btn btn-lg btn-outline-success float-right rounded mx-2" onClick={displayPostClassForm}>Post Class Material</button>
+                        <Link to={`/discussion-group/${props.match.params.course_code}`}>
+                            <button className="btn btn-lg btn-outline-info float-right rounded mx-2">Discussion Group</button>
+                        </Link>
                     </div>
                     <hr/>
                     <div className="container" style={{display: displayMainContent}}>
-                        <UploadDisplay uploads={classUploads} isAssignment={false}/>
+                        <h2 className="text-white text-center mb-3">{JSON.parse(localStorage.getItem('classes')).filter(cls => cls.course_code === props.match.params.course_code)[0].subject}:&nbsp; Course Material </h2>
+                        <UploadDisplay uploads={classUploads} isAssignment={false} course_code={props.match.params.course_code}/>
                     </div>
                     {leaveClassDialog()}
                     {deleteClassDialog()}
