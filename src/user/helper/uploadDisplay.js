@@ -4,7 +4,7 @@ import Zoom from 'react-reveal/Zoom';
 import EditPostForm from "./EditPostForm";
 import {isAuthenticated} from "../../auth/helper";
 import {Link} from "react-router-dom";
-import {deletePost, postMaterial, submitAssignment} from "./userapicalls";
+import {deleteAssignment, deletePost, postMaterial, submitAssignment} from "./userapicalls";
 
 const UploadDisplay = (props) => {
 
@@ -182,6 +182,9 @@ const UploadDisplay = (props) => {
 
     const deletePostHandler = (_id) => {
         console.log(_id);
+        if(isAssignment) {
+            deleteAssignment(_id);
+        }
         deletePost(_id)
             .then(data => {
                 window.location.reload(false);
@@ -205,9 +208,11 @@ const UploadDisplay = (props) => {
                                     : <p></p>}
 
                                 {!isStudent && <span className='float-right pl-4'>
-                                    <Link to={{pathname: `/admin/dashboard/my-class/${props.course_code}/edit-post`, classUpld: classUpload}}>
-                                        <button className="btn btn-warning m-1 rounded">Edit</button>
-                                    </Link>
+                                    {!isAssignment && (
+                                        <Link to={{pathname: `/admin/dashboard/my-class/${props.course_code}/edit-post`, classUpld: classUpload}}>
+                                            <button className="btn btn-warning m-1 rounded">Edit</button>
+                                        </Link>
+                                    )}
                                     <button className="btn btn-danger m-1 rounded" onClick={() => deletePostHandler(classUpload._id)}>Delete</button>
                                 </span>}
 

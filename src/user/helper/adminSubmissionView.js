@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Zoom from 'react-reveal/Zoom'
-import {getAssignmentSubmissions} from "./userapicalls";
+import {getAllUsersInClass, getAssignmentSubmissions} from "./userapicalls";
 import Base from "../../core/Base";
 import UploadDisplay from "./uploadDisplay";
 import {scoreAssignment} from "./userapicalls";
@@ -21,6 +21,8 @@ const AdminSubmissionView = (props) => {
     const [assignId, setAssignId] = useState('');
 
     const [assignSubmissions, setAssignSubmissions] = useState([]);
+
+    const [usersInClass, setUsersInClass] = useState([]);
 
     const [assignemnts, setAssignments] = useState([]);
 
@@ -56,15 +58,21 @@ const AdminSubmissionView = (props) => {
         setUserInfo({...userInfo, name: name, _id: _id, email: email, role: role});
         setAssignId(props.match.params._id);
         console.log(props.match.params._id);
-        getAssignmentSubmissions(props.match.params._id)
+        getAllUsersInClass(props.match.params.course_code)
             .then(data => {
-                setAssignSubmissions(data);
-                console.log(data);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.log(err);
+                data = data.filter(ele => ele.role !== 1)
+                setUsersInClass(data);
+                getAssignmentSubmissions(props.match.params._id)
+                    .then(data => {
+                        setAssignSubmissions(data);
+                        console.log(data);
+                        setLoading(false);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
             });
+
         setAssignments(JSON.parse(localStorage.getItem('assignments')));
         setLogoColor(backgroundColorPicker());
     }, []);
@@ -139,17 +147,25 @@ const AdminSubmissionView = (props) => {
                 </div>
                 <hr/>
                 <div className='container'>
-                    <h2 className="text-white">{assignemnts.filter(assignment => assignment._id === props.match.params._id)[0].title} <span className="float-right text-white">Marks: {assignemnts.filter(assignment => assignment._id === props.match.params._id)[0].marks}</span></h2>
+                    <h2 className="text-white">
+                        {assignemnts.filter(assignment => assignment._id === props.match.params._id)[0].title}
+                        <span className="float-right text-white">
+                            Marks: {assignemnts.filter(assignment => assignment._id === props.match.params._id)[0].marks}
+                        </span>
+                        <br/>
+                        <p className="float-right text-white pt-2">Submitted: {assignSubmissions.length}/{usersInClass.length}</p>
+                    </h2>
                     <h6 className="text-white pt-3" style={{whiteSpace: "pre-line"}}>{assignemnts.filter(assignment => assignment._id === props.match.params._id)[0].description}</h6>
                     <p className="text-white pt-3">Due Date: {`${assignemnts.filter(assignment => assignment._id === props.match.params._id)[0].due_date} ${assignemnts.filter(assignment => assignment._id === props.match.params._id)[0].due_date_time}`}</p>
                     <p>Questions: <a href={`http://localhost:5000/${assignemnts.filter(assignment => assignment._id === props.match.params._id)[0].file}`} className='pt-3'>{assignemnts.filter(assignment => assignment._id === props.match.params._id)[0].file}</a></p>
                 </div>
 
                 <div className='container mt-3 pt-3'>
+                    <h3 className='text-white'>Submissions: </h3>
+                    <hr/>
                     {
                         assignSubmissions.length === 0 ? <h3 className='text-center text-white'>No Submissions yet</h3> : ''
                     }
-
                     {assignSubmissions && assignSubmissions.map((submission, idx) => {
                         return <div className="card rounded m-2">
                             <h5 className="card-header text-left text-dark d-inline-block">{submission.name}</h5>
@@ -177,6 +193,20 @@ const AdminSubmissionView = (props) => {
                         </div>
                     })}
 
+                    <h3 className='text-white'>Not Yet Submitted: </h3>
+                    <hr/>
+                    {usersInClass && usersInClass.map(user => {
+                        const submitted_users_list = assignSubmissions.map(sub => sub.usn);
+                        console.log(submitted_users_list);
+                        return !submitted_users_list.includes(user.usn) &&
+                            <div className="card rounded m-2">
+                                <h5 className="card-header text-dark p-3">
+                                    {user.name}
+                                </h5>
+                                <p className="card-body text-dark">{user.usn}</p>
+                            </div>
+
+                    })}
                 </div>
             </div>}
         </Base>

@@ -202,7 +202,7 @@ export const getAllChatsInClass = (course_code) => {
 }
 
 export const getAllUsersInClass = (course_code) => {
-    const url = `${API}/user/get_all_in_class/${course_code}`;
+    const url = `${API}/user/get-all-in-class/${course_code}`;
     return fetch(url, {
         method: "GET"
     })
@@ -330,3 +330,19 @@ export const getUnreadNotifications = () => {
         .then(response => response.data)
         .catch(err => console.error(err));
 }
+
+export const deleteAssignment = (_id) => {
+    const url = `${API}/assignment/delete/${_id}`;
+    return axios.delete(url)
+        .then(response => {
+            return response.data;
+        })
+        .catch(err => console.log(err));
+}
+
+// export const getAllUsersInClass = (course_code) => {
+//     const url = `${API}/user/get-all-in-class/${course_code}`;
+//     return axios.get(url)
+//         .then(response => response.data)
+//         .catch(err => console.error(err));
+// }
