@@ -308,3 +308,25 @@ export const deletePost = (_id) => {
         .catch(err => console.error(err));
 }
 
+export const getUnSubmittedAssignments = () => {
+    const user_id = isAuthenticated().user._id;
+    const classList = JSON.parse(localStorage.getItem('classes')).map(cls => cls.course_code).join(',');
+    const url = `${API}/assignment/get-unsubmitted-count?array=${classList}&user_id=${user_id}`;
+    return axios.get(url)
+        .then(response => {
+            console.log(response.data);
+            return response.data;
+        })
+        .catch(err => {
+            console.error(err);
+        })
+}
+
+export const getUnreadNotifications = () => {
+    const user_id = isAuthenticated().user._id;
+    const classList = JSON.parse(localStorage.getItem('classes')).map(cls => cls.course_code).join(',');
+    const url = `${API}/class/get-unread-notifications?array=${classList}&user_id=${user_id}`;
+    return axios.get(url)
+        .then(response => response.data)
+        .catch(err => console.error(err));
+}

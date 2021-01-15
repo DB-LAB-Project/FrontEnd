@@ -1,6 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import Base from "../core/Base";
-import {getUserClasses, enrollIntoClass} from "./helper/userapicalls";
+import {
+    getUserClasses,
+    enrollIntoClass,
+    getUnSubmittedAssignments,
+    getUnreadNotifications
+} from "./helper/userapicalls";
 import {ClassList} from "./helper/ClassList";
 
 const UserDashBoard = () => {
@@ -43,14 +48,32 @@ const UserDashBoard = () => {
 
     useEffect(() => {
         if(typeof window !== 'undefined') {
+            let class_data = [];
             const user = JSON.parse(localStorage.getItem("jwt")).user;
             let {name, _id, email, role} = user;
             setUserInfo({...userInfo, name: name, _id: _id, email: email, role: role});
             getUserClasses(userInfo._id).then(data => {
-                setCls([...data]);
+                // setCls([...data]);
+                class_data = data;
                 if(typeof window !== "undefined") {
                     localStorage.setItem("classes", JSON.stringify(data));
                 }
+                getUnSubmittedAssignments().then(data => {
+                    class_data = class_data.map(cls => {
+                        const assignmentCount = data.filter(ele => ele.course_code === cls.course_code);
+                        return {...cls, assignmentCount: assignmentCount[0].count}
+                    });
+                    getUnreadNotifications().then(data => {
+                        class_data = class_data.map(cls => {
+                            const notificationCount = data.filter(ele => ele.course_code === cls.course_code);
+                            // console.log(notificationCount[0].count);
+                            return {...cls, notificationCount: notificationCount[0].count}
+                        });
+                        // console.log(data);
+                        console.log(class_data);
+                        setCls([...class_data]);
+                    });
+                });
             });
             setLogoColor(backgroundColorPicker());
             setLoading(false);

@@ -30,17 +30,21 @@ export const ClassList = (props) => {
         </div>
     }
     return classes.map((cls, idx) => {
-            return isAdmin ? (<Link to={`/admin/dashboard/my-class/${cls["course_code"]}`}>
+            return isAdmin ? (<Link to={`/admin/dashboard/my-class/${cls["course_code"]}`} key={idx}>
                 <div className="card d-inline-block m-2 px-0" key={idx}
                      style={{backgroundColor: backgroundColorPicker(), width: "302px"}}>
                     <h2 className="card-header text-left text-dark">{cls.subject}</h2>
                     <h6 className="card-body text-left text-dark d-1 d-inline-block">{cls["course_code"]}</h6>
                 </div>
-            </Link>) : (<Link to={`/user/dashboard/my-class/${cls["course_code"]}`}>
+            </Link>) : (<Link to={`/user/dashboard/my-class/${cls["course_code"]}`} key={idx}>
                 <div className="card d-inline-block m-2 px-0" key={idx}
                      style={{backgroundColor: backgroundColorPicker(), width: "302px"}}>
                     <h2 className="card-header text-left text-dark">{cls.subject}</h2>
-                    <h6 className="card-body text-left text-dark d-1 d-inline-block">{cls["course_code"]}</h6>
+                    <h6 className="card-body text-left text-dark d-1 d-inline-block">
+                        {cls["course_code"]}
+                        <p className="pt-2">{cls["assignmentCount"] === 0 ? "No" : cls["assignmentCount"]} Assignments pending</p>
+                        <p>{cls["notificationCount"] === 0 ? "No" : cls["notificationCount"]} New Notifications</p>
+                    </h6>
                 </div>
             </Link>)
         });
