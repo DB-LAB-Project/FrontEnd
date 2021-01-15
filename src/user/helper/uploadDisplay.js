@@ -4,7 +4,7 @@ import Zoom from 'react-reveal/Zoom';
 import EditPostForm from "./EditPostForm";
 import {isAuthenticated} from "../../auth/helper";
 import {Link} from "react-router-dom";
-import {postMaterial, submitAssignment} from "./userapicalls";
+import {deletePost, postMaterial, submitAssignment} from "./userapicalls";
 
 const UploadDisplay = (props) => {
 
@@ -140,7 +140,7 @@ const UploadDisplay = (props) => {
     const isStudent = props.isStudent;
     let submissions = null
     let submitted_assignments = [];
-    if(isStudent) {
+    if(isStudent && isAssignment) {
         submissions = JSON.parse(localStorage.getItem('submissions'));
         console.log(submissions);
         submitted_assignments = submissions.map(submission => submission["assignment_id"]);
@@ -180,9 +180,17 @@ const UploadDisplay = (props) => {
             });
     }
 
+    const deletePostHandler = (_id) => {
+        console.log(_id);
+        deletePost(_id)
+            .then(data => {
+                window.location.reload(false);
+            });
+    }
+
     return (
                 <div style={{display: displayMainContent}}>
-                    <Zoom>
+
                         {classUploads.map((classUpload, idx) => {
                             return <div className="card rounded m-2" key={idx} style={{display: displayMainContent}}>
                                 <h5 className="card-header text-left text-dark d-inline-block">{classUpload.title} {isAssignment && <p className="text-left text-dark float-right d-inline-block m-0">Marks: {classUpload.marks}</p>}</h5>
@@ -197,8 +205,10 @@ const UploadDisplay = (props) => {
                                     : <p></p>}
 
                                 {!isStudent && <span className='float-right pl-4'>
-                                    <button className="btn btn-warning m-1 rounded">Edit</button>
-                                    <button className="btn btn-danger m-1 rounded">Delete</button>
+                                    <Link to={{pathname: `/admin/dashboard/my-class/${props.course_code}/edit-post`, classUpld: classUpload}}>
+                                        <button className="btn btn-warning m-1 rounded">Edit</button>
+                                    </Link>
+                                    <button className="btn btn-danger m-1 rounded" onClick={() => deletePostHandler(classUpload._id)}>Delete</button>
                                 </span>}
 
                                 {/*{isAuthenticated().user._id === classUpload.}*/}
@@ -214,7 +224,6 @@ const UploadDisplay = (props) => {
                                 </div>}
                             </div>
                         })}
-                    </Zoom>
             </div>
     );
 };

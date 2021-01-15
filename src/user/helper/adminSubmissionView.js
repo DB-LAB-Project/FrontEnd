@@ -153,12 +153,12 @@ const AdminSubmissionView = (props) => {
                     {assignSubmissions && assignSubmissions.map((submission, idx) => {
                         return <div className="card rounded m-2">
                             <h5 className="card-header text-left text-dark d-inline-block">{submission.name}</h5>
-                            <h6 className="card-body text-left text-dark d-1 d-inline-block pb-2 w-auto" style={{whiteSpace: 'pre-wrap'}}>Submission: <a href={submission.file}>{submission.file}</a> </h6>
+                            <h6 className="card-body text-left text-dark d-1 d-inline-block pb-2 w-auto" style={{whiteSpace: 'pre-wrap'}}>Submission: <a href={`http://localhost:5000/${submission.file}`} target="_blank">{submission.file}</a> </h6>
                             <p className='text-dark p-4'>
                                 Submitted on: {`${submission.submitted_on} ${submission.time}`}
                                 {submission.submitted_late === 0 ? <span className='text-success float-right'>Submitted</span> : <span className='text-danger float-right'>Submitted Late</span>}
                             </p>
-                            {submission.marks ?
+                            {submission.marks !== null ?
                                 <p className='d-inline-block float-right card-body text-dark w-auto'>Marks: {submission.marks}
                                     <span className='input-group float-right w-25'>
                                         <input type="text" placeholder='Enter marks...' className='form-control' onChange={handleSubmitFormChange}/>

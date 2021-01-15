@@ -29,8 +29,7 @@ export const ClassList = (props) => {
             <h1 className="text-white text-center d-4">No Classes found!!! :(</h1>
         </div>
     }
-    return <Zoom>
-        {classes.map((cls, idx) => {
+    return classes.map((cls, idx) => {
             return isAdmin ? (<Link to={`/admin/dashboard/my-class/${cls["course_code"]}`}>
                 <div className="card d-inline-block m-2 px-0" key={idx}
                      style={{backgroundColor: backgroundColorPicker(), width: "302px"}}>
@@ -44,7 +43,6 @@ export const ClassList = (props) => {
                     <h6 className="card-body text-left text-dark d-1 d-inline-block">{cls["course_code"]}</h6>
                 </div>
             </Link>)
-        })}
-    </Zoom>;
+        });
 };
 

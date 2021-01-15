@@ -78,7 +78,7 @@ const DiscussionGroup = (props) => {
         socket.on('message', ({user, message}) => {
             setMessages([...messages, {message, user}]);
         });
-    }, []);
+    }, [messages]);
 
     const sendMessage = (event) => {
         event.preventDefault();
@@ -94,8 +94,9 @@ const DiscussionGroup = (props) => {
             .catch(err => {
                 console.log(err);
             })
+        setMsg('');
         socket.emit('sendMessage', message, () => setMsg(''));
-        window.location.reload(false);
+        // window.location.reload(false);
     }
 
     return (
@@ -161,3 +162,6 @@ const DiscussionGroup = (props) => {
 };
 
 export default DiscussionGroup;
+
+
+// TODO: https://github.com/adrianhajdin/project_chat_application Credits for chat window design

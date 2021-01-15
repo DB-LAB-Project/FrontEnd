@@ -13,7 +13,7 @@ const AdminClass = (props) => {
         role: 1
     });
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const [classUploads, setClassUploads] = useState([]);
 
@@ -63,6 +63,7 @@ const AdminClass = (props) => {
             setUserInfo({...userInfo, name: name, _id: _id, email: email, role: role});
             getClassItems(props.match.params.course_code)
                 .then(data => {
+                    // localStorage.setItem('class_uploads', JSON.stringify(data));
                     setClassUploads(data);
                     console.log(data);
                 })
@@ -73,8 +74,8 @@ const AdminClass = (props) => {
             getAllUsersInClass(props.match.params.course_code)
                 .then(data => {
                     localStorage.setItem('class_users', JSON.stringify(data));
-                    console.log(data);
-                    setLoading(false);
+                    // console.log(data);
+                    // setLoading(false);
                 })
                 .catch(err => {
                     console.log(err);

@@ -13,6 +13,7 @@ import UserClass from "./user/userClass";
 import UserAssignment from "./user/userAssignment";
 import DiscussionGroup from "./user/discussionGroup";
 import AdminSubmissionView from "./user/helper/adminSubmissionView";
+import EditPostForm from "./user/helper/EditPostForm";
 
 const Routes = () => {
     return (
@@ -28,6 +29,7 @@ const Routes = () => {
                 <AdminRoute path="/admin/dashboard" exact component={AdminDashBoard} />
                 <AdminRoute path="/admin/dashboard/my-class/:course_code" exact component={AdminClass} />
                 <AdminRoute path="/admin/dashboard/my-class/:course_code/assignments" exact component={AdminAssignment} />
+                <AdminRoute path="/admin/dashboard/my-class/:course_code/edit-post" exact component={EditPostForm} />
                 <AdminRoute path="/admin/dashboard/my-class/:course_code/assignments/view-submissions/:_id" exact component={AdminSubmissionView} />
             </Switch>
         </BrowserRouter>

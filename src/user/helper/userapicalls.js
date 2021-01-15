@@ -278,3 +278,33 @@ export const scoreAssignment = (data) => {
 
 }
 
+export const editFacultyPost = (formData) => {
+    const url = `${API}/class/edit-post`;
+    let fd = new FormData();
+    fd.append('_id', formData._id);
+    fd.append('title', formData.title);
+    fd.append('description', formData.description);
+    if(formData.attachment) {
+        fd.append('attachment', formData.attachment, formData.attachment.name);
+    } else {
+        fd.append('file', formData.file);
+    }
+    return axios.put(url, fd)
+        .then(response => {
+            console.log(response);
+            return response.data;
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+export const deletePost = (_id) => {
+    const url = `${API}/class/delete-post/${_id}`;
+    return axios.delete(url)
+        .then(response => {
+            return response.data;
+        })
+        .catch(err => console.error(err));
+}
+

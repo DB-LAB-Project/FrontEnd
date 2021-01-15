@@ -141,7 +141,7 @@ const UserClass = (props) => {
                     <hr/>
                     <div className="container" style={{display: displayMainContent}}>
                         <h2 className="text-white text-center mb-3">{JSON.parse(localStorage.getItem('classes')).filter(cls => cls.course_code === props.match.params.course_code)[0].subject}:&nbsp; Course Material </h2>
-                        <UploadDisplay uploads={classUploads} isAssignment={false}/>
+                        <UploadDisplay uploads={classUploads} isAssignment={false} isStudent={true}/>
                     </div>
                     {leaveClassDialog()}
                 </div>
