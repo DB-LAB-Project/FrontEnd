@@ -25,6 +25,10 @@ const UserDashBoard = () => {
 
     const [enrollClassCode, setEnrollClassCode] = useState('');
 
+    const [courseCodeError, setCourseCodeError] = useState('');
+
+    const [receivedError, setReceivedError] = useState('');
+
     const [logoColor, setLogoColor] = useState('');
 
     const [displayMainContent, setDisplayMainContent] = useState("");
@@ -91,7 +95,23 @@ const UserDashBoard = () => {
         );
     };
 
+    const errorMessage = () => {
+        return(
+            <div className="row mt-1">
+                <div className="col-md-6 offset-sm-3 text-left">
+                    <div
+                        className = "alert alert-danger mt-2"
+                        style = {{display: receivedError !== '' ? "" : "none"}}
+                    >
+                        {receivedError} <span className='float-right' onClick={() => setReceivedError('')}>X</span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     const handleCLassFormChange = (event) => {
+        setCourseCodeError('');
         setEnrollClassCode(event.target.value);
         console.log(enrollClassCode);
     }
@@ -104,7 +124,9 @@ const UserDashBoard = () => {
     const closeForm = () => {
         setDisplayEnrollForm("none");
         setDisplayMainContent("");
-        window.location.reload(false);
+        if(receivedError === '') {
+            window.location.reload(false);
+        }
     }
 
     const classEnrollForm = () => {
@@ -112,7 +134,7 @@ const UserDashBoard = () => {
             <div className="card w-25 mx-auto border" style={{display: displayEnrollForm}}>
                 <form className="m-3 p-4 border border-secondary rounded">
                     <div className="mb-3">
-                        <label className="form-label text-dark">Course Code</label>
+                        <label className="form-label text-dark">Course Code {courseCodeError && <span className='text-danger'>{courseCodeError}</span>}</label>
                         <input type="text" className="form-control rounded" reqiured placeholder="Enter the Course Code" onChange={handleCLassFormChange}/>
                     </div>
                     <div className="d-flex">
@@ -124,9 +146,17 @@ const UserDashBoard = () => {
         )
     };
     const handleEnrollClass = () => {
+        if(enrollClassCode === '') {
+            setCourseCodeError('This field cannot be empty!');
+            return;
+        }
         setLoading(true);
         enrollIntoClass(enrollClassCode)
             .then(data => {
+                if(data.error) {
+                    console.log(data.error);
+                    setReceivedError(data.error);
+                }
                 console.log(data);
                 setLoading(false);
                 closeForm();
@@ -150,6 +180,7 @@ const UserDashBoard = () => {
                         <button className="btn btn-lg btn-outline-success float-right rounded" onClick={displayForm}>Enroll</button>
                     </div>
                     <hr/>
+                    {errorMessage()}
                     <div className="row align-items-start" style={{display: displayMainContent}}>
                         <ClassList cls={cls} isAdmin={false}/>
                     </div>

@@ -24,6 +24,11 @@ const AdminDashBoard = () => {
 
     const [displayMainContent, setDisplayMainContent] = useState("");
 
+    const [err, setErr] = useState({
+        subjectError: '',
+        codeError: ''
+    })
+
     const [logoColor, setLogoColor] = useState('')
 
     const colors = [
@@ -72,9 +77,21 @@ const AdminDashBoard = () => {
 
     const handleClassFrom = name => event => {
         name === 'course_code' ? setCreateClassCode(event.target.value) : setCreateSubjectName(event.target.value);
+        setErr({
+            subjectError: '',
+            codeError: ''
+        });
     }
 
     const handleCreateClass = () => {
+        if(createSubjectName === '') {
+            setErr({...err, subjectError: 'This field cannot be empty!'});
+            return;
+        }
+        if(createClassCode === '') {
+            setErr({...err, codeError: 'This field cannot be empty!'});
+            return;
+        }
         setLoading(true);
         createClass(createSubjectName, createClassCode)
             .then(data => {
@@ -99,11 +116,11 @@ const AdminDashBoard = () => {
             <div className="card w-25 mx-auto border" style={{display: displayClassForm}}>
                 <form className="m-3 p-4 border border-secondary rounded">
                     <div className="mb-3">
-                        <label className="form-label text-dark">Subject Name</label>
+                        <label className="form-label text-dark">Subject Name {err.subjectError && <span className='text-danger'>{err.subjectError}</span>}</label>
                         <input type="text" className="form-control rounded" reqiured placeholder="Enter the subject name" onChange={handleClassFrom('subject')}/>
                     </div>
                     <div className="mb-3">
-                        <label className="form-label text-dark">Course Code</label>
+                        <label className="form-label text-dark">Course Code {err.codeError && <span className="text-danger">{err.codeError}</span>}</label>
                         <input type="text" className="form-control rounded" reqiured placeholder="Enter the Course Code" onChange={handleClassFrom('course_code')}/>
                     </div>
                     <div className="d-flex">
